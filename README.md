@@ -18,14 +18,14 @@ singularity build --fakeroot melodic.sif Singularity_melodic.def
 singularity shell -B $(pwd):/workspace melodic.sif
 ```
 
-2. Set up environment
+4. Set up environment
 ```
 source /opt/ros/melodic/setup.bash
 source /jackal_ws/devel/setup.bash
 cd /workspace
 ```
 
-3. Run
+5. Run
 - Test navigation stack in world index 0
 ```
 python3 run.py
