@@ -1,0 +1,53 @@
+Bootstrap: docker
+From: ros:noetic
+
+%setup
+    mkdir -p ${SINGULARITY_ROOTFS}/jackal_ws/src
+
+%files
+    . /jackal_ws/src/the-barn-challenge-mlda
+
+%post -c /bin/bash
+    apt -y update
+    apt-get -y install build-essential cmake git pkg-config python3-pip
+
+    pip3 install --upgrade pip
+    pip3 install defusedxml rospkg netifaces numpy
+
+    # Build ACADOS from source
+    cd /
+    git clone https://github.com/acados/acados.git
+    cd acados
+    git submodule update --recursive --init
+    mkdir -p build && cd build
+    cmake -DACADOS_WITH_QPOASES=ON ..
+    make install -j4
+
+    # generate ACADOS solver
+    export ACADOS_SOURCE_DIR="/acados"
+    export LD_LIBRARY_PATH="$ACADOS_SOURCE_DIR/lib:$LD_LIBRARY_PATH"
+    cd /jackal_ws/src
+    git clone https://github.com/Team-Robo/mode-switching-mpc-2026.git --branch v3.0
+    cd /jackal_ws/src/mode-switching-mpc-2026/script
+    ./setup_acados_mpc.sh
+
+    cd /jackal_ws/src
+    # clone team robo jackal repo with a barn jackal odometry fix
+    git clone https://github.com/Team-Robo/jackal.git --branch noetic-devel
+    git clone https://github.com/jackal/jackal_simulator.git --branch melodic-devel
+    git clone https://github.com/jackal/jackal_desktop.git --branch melodic-devel
+    git clone https://github.com/Team-Robo/obstacle_detector.git
+
+    # avoid interactive prompts during package installation
+    export DEBIAN_FRONTEND=noninteractive
+    source /opt/ros/noetic/setup.bash
+    cd /jackal_ws
+    rosdep init; rosdep update --rosdistro noetic
+    rosdep install -y --from-paths . --ignore-src --rosdistro=noetic
+    catkin_make
+    source devel/setup.bash
+
+%environment
+    export ACADOS_SOURCE_DIR="/acados"
+    export LD_LIBRARY_PATH="$ACADOS_SOURCE_DIR/lib:$LD_LIBRARY_PATH"
+
