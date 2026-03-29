@@ -1,3 +1,6 @@
+# Prerequisite
+- [Singularity](https://docs.sylabs.io/guides/3.5/user-guide/quick_start.html#quick-installation-steps)
+
 # Instructions
 
 1. Clone this repo
@@ -10,6 +13,10 @@ cd the-barn-challenge-mlda
 - ROS Melodic
 ```
 singularity build --fakeroot melodic.sif Singularity_melodic.def
+```
+- ROS Noetic
+```
+singularity build --fakeroot noetic.sif Singularity_noetic.def
 ```
 
 3. Start interactive session, binding this repo root as writable host directory to `/workspace` in Singularity container
