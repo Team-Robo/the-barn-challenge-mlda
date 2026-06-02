@@ -27,7 +27,7 @@ From: ros:noetic
     export ACADOS_SOURCE_DIR="/acados"
     export LD_LIBRARY_PATH="$ACADOS_SOURCE_DIR/lib:$LD_LIBRARY_PATH"
     cd /jackal_ws/src
-    git clone https://github.com/Team-Robo/mode-switching-mpc-2026.git --branch v3.0
+    git clone https://github.com/Team-Robo/mode-switching-mpc-2026.git
     cd /jackal_ws/src/mode-switching-mpc-2026/script
     ./setup_acados_mpc.sh
 
